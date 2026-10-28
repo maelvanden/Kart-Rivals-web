@@ -2,7 +2,7 @@ name: Publication IONOS
 on:
   push:
     branches: [main]
-    paths: [".github/workflows/ionos.yml"]
+    paths: ["public/**"]
   workflow_dispatch:
     inputs:
       operation:
@@ -37,7 +37,8 @@ jobs:
           IONOS_SFTP_PASSWORD: ${{ secrets.IONOS_SFTP_PASSWORD }}
           IONOS_HOST_FINGERPRINT: ${{ vars.IONOS_HOST_FINGERPRINT }}
           IONOS_REMOTE_DIR: ${{ vars.IONOS_REMOTE_DIR }}
-          OPERATION: ${{ inputs.operation || 'verifier' }}
+          OPERATION: ${{ inputs.operation || 'publier' }}
+          DEPLOYMENT_ID: ${{ github.run_id }}-${{ github.run_attempt }}
         shell: python
         run: |
           import base64
@@ -47,6 +48,7 @@ jobs:
           import os
           from pathlib import Path, PurePosixPath
           import stat
+          import shutil
           import paramiko
 
           for name in ("IONOS_SFTP_HOST", "IONOS_SFTP_USER", "IONOS_SFTP_PASSWORD"):
@@ -96,7 +98,8 @@ jobs:
                           (source / name).is_file() for name in ("index.html", "index.php")
                       ):
                           raise SystemExit("Ajouter le site dans public/ avec index.html ou index.php.")
-                      paths = sorted(source.rglob("*"))
+                      # Publish the entry point last so its assets are already available.
+                      paths = sorted(source.rglob("*"), key=lambda p: (p.name in ("index.html", "index.php", ".htaccess"), p.as_posix()))
                       if any(p.is_symlink() for p in paths):
                           raise SystemExit("Les liens symboliques ne sont pas autorises.")
 
@@ -114,12 +117,15 @@ jobs:
                               raise SystemExit("Le chemin distant doit etre un dossier reel.")
 
                       ensure_dir(target)
+                      backup_root = target.parent / ".kart-rivals-backups" / os.environ["DEPLOYMENT_ID"]
                       count = 0
+                      backed_up = 0
                       for local in paths:
                           remote = target / local.relative_to(source).as_posix()
                           if local.is_dir():
                               ensure_dir(remote)
                           elif local.is_file():
+                              info = None
                               try:
                                   info = sftp.lstat(str(remote))
                               except OSError as exc:
@@ -128,6 +134,12 @@ jobs:
                               else:
                                   if not stat.S_ISREG(info.st_mode):
                                       raise SystemExit("La destination doit etre un fichier ordinaire.")
+                              if info is not None and stat.S_ISREG(info.st_mode):
+                                  backup = backup_root / local.relative_to(source).as_posix()
+                                  ensure_dir(backup.parent)
+                                  with sftp.open(str(remote), "rb") as previous, sftp.open(str(backup), "wb") as saved:
+                                      shutil.copyfileobj(previous, saved, length=65536)
+                                  backed_up += 1
                               sftp.put(str(local), str(remote), confirm=True)
                               count += 1
-                      print(str(count) + " fichiers transferes. Aucun fichier distant supprime.")
+                      print(str(count) + " fichiers transferes. " + str(backed_up) + " fichiers sauvegardes hors du dossier public. Aucun fichier distant supprime.")
