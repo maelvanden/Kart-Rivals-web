@@ -57,15 +57,6 @@ $$('[data-rank]').forEach(button => button.addEventListener('click', () => {
   $('.rank-display').style.setProperty('--rank-color', rank[2]);
 }));
 
-$('#region').addEventListener('change', event => {
-  const select = event.target;
-  const all = select.value === 'all';
-  const label = select.options[select.selectedIndex].text;
-  $('#map-region').textContent = label.toLocaleUpperCase('fr');
-  $('#region-note').textContent = all ? 'Retrouve l’annuaire complet et les circuits à proximité dans l’application.' : label + ' : retrouve les circuits, les infos pratiques et les pilotes de la région dans l’application.';
-  $$('[data-pin]').forEach(pin => { pin.classList.toggle('active', pin.dataset.pin === select.value); pin.classList.toggle('inactive', !all && pin.dataset.pin !== select.value); });
-});
-
 $$('[data-store]').forEach(button => button.addEventListener('click', () => {
   const apple = button.dataset.store === 'apple';
   const config = window.KART_RIVALS || {};

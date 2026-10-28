@@ -5,10 +5,10 @@ Site français de présentation de l’application mobile, publié sur https://k
 ## Contenu
 
 - Identité Motorsport / Gaming : Oswald, Inter, fond #161920 et accent #DEFF00.
-- Présentation, fonctionnement, quatre écrans interactifs, sept rangs, Time Attack, écuries, garage, aperçu des régions, partenariat et FAQ.
+- Présentation, fonctionnement, quatre écrans interactifs, sept rangs, Time Attack, écuries, garage, annuaire et carte des circuits, partenariat et FAQ.
 - Menu mobile, navigation au clavier, dialogues natifs et respect du mouvement réduit.
 - Images WebP, polices locales sous licence OFL, métadonnées sociales, robots et sitemap.
-- La carte des régions est un aperçu schématique, pas un annuaire géographique ni une source de données de l’application.
+- Carte géographique interactive et recherche parmi 354 circuits importés depuis le dépôt de l’application.
 
 ## À compléter
 
@@ -29,3 +29,40 @@ Le mode manuel `verifier` teste uniquement l’authentification et l’ouverture
 ## Développement
 
 Servir `public/` avec un serveur HTTP statique. Aucun paquet npm n’est nécessaire. La configuration `.openai/hosting.json` sert uniquement à l’aperçu de développement, pas à l’hébergement du site.
+
+## Annuaire et carte des circuits
+
+La section `#circuits` affiche 354 circuits provenant des données publiques du dépôt
+`maelvanden/KART-RIVALS` (commit source dans `public/data/circuits.json`). Recherche
+sans accents par nom, ville, code postal ou département ; filtres région/département
+et indoor/outdoor ; carte Leaflet avec regroupement des points et fiches pratiques.
+Les 14 positions approximatives connues sont signalées. Les liens d'itinéraire
+utilisent l'adresse du lieu, pas une position GPS approximative.
+
+Ce fichier est un **instantané des migrations**, pas une lecture en direct de Supabase.
+Les ajouts, corrections ou masquages effectués uniquement dans la base de production
+ne sont pas automatiquement repris. Aucune donnée de pilote, aucun secret ni aucune
+clé Supabase ne sont utilisés ou publiés. Les identifiants web sont déterministes et
+ne sont pas les UUID de la base de l'application.
+
+Pour mettre à jour depuis un checkout de l'application :
+
+```sh
+python scripts/import-circuits.py /chemin/vers/KART-RIVALS
+node tests/circuits.test.cjs
+```
+
+L'import rejoue uniquement les INSERT et UPDATE statiques des circuits en mémoire,
+conserve les corrections de coordonnées et exporte une liste de champs publics.
+Le test de nombre de circuits est à ajuster après vérification des nouveaux imports.
+Inspecter le diff avant publication. Les fichiers de l'application ne sont pas modifiés.
+
+Leaflet 1.9.4 et Leaflet.markercluster 1.5.3 sont hébergés localement dans
+`public/assets/vendor`, avec leurs licences. Les contours géographiques des
+96 départements métropolitains sont hébergés dans `public/data/departments.geojson`.
+Source : IGN Admin Express 2018, simplification France GeoJSON, Licence ouverte
+(voir `public/data/GEOGRAPHY-LICENSE.txt`). Ce fond administratif est une vraie
+carte géographique avec zoom et coordonnées, sans détails routiers. Les itinéraires
+ouvrent Google Maps. Aucun service de tuiles externe ni géolocalisation du visiteur.
+Le chargement des données est différé à l'approche de l'annuaire. La recherche reste
+utilisable si le fond géographique échoue ; l'interface signale cet état.

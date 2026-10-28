@@ -1,0 +1,10 @@
+Contours des départements de France métropolitaine.
+Source : IGN, Admin Express COG, édition 2018 ; noms et codes INSEE, millésime 2018.
+Conversion et simplification GeoJSON : Grégoire David / france-geojson.
+https://github.com/gregoiredavid/france-geojson
+Fichier : departements-version-simplifiee.geojson
+https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements-version-simplifiee.geojson
+Téléchargé le 28 octobre 2026. Aucun changement géométrique ; JSON compacté.
+Réutilisation sous Licence Ouverte Etalab, conformément aux conditions de la source :
+https://www.etalab.gouv.fr/licence-ouverte-open-licence/
+Ces contours administratifs servent au repérage des circuits, pas à la navigation routière.

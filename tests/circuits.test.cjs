@@ -1,0 +1,27 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+require('../public/assets/circuits-core.js');
+const {prepare, filter, normalize, safeURL} = globalThis.KartCircuits;
+const data = JSON.parse(fs.readFileSync(__dirname + '/../public/data/circuits.json'));
+const tracks = prepare(data.tracks);
+assert.equal(tracks.length,354);
+assert.equal(new Set(tracks.map(t=>t.department)).size,88);
+assert.equal(tracks.filter(t=>t.location_approx).length,14);
+assert.equal(filter(tracks,{query:'inwall'})[0].lat,47.4284);
+assert.equal(filter(tracks,{query:'loudun'})[0].lng,0.0717);
+assert.equal(filter(tracks,{query:'speedpark angers'})[0].length_m,230);
+assert.equal(normalize('Île-de-France'),normalize('ile de france'));
+assert.equal(filter(tracks,{query:'ponts de ce'})[0].name,'Inwall Kart');
+assert.deepEqual(filter(tracks,{query:'49'}).map(t=>t.id),filter(tracks,{department:'49'}).map(t=>t.id));
+assert.equal(filter(tracks,{query:'maine et loire'}).length,4);
+assert.equal(filter(tracks,{department:'49',type:'outdoor'})[0].name,'MK Racing');
+assert.equal(filter(tracks,{department:'49',region:'Bretagne'}).length,0);
+assert.equal(filter(tracks,{query:'zzzz-no-track-zzzz'}).length,0);
+assert.equal(filter(tracks,{query:'<script>alert(1)</script>'}).length,0);
+assert.equal(filter(tracks,{type:'indoor'}).length+filter(tracks,{type:'outdoor'}).length,354);
+for(const bad of ['javascript:alert(1)','data:text/html,test','https://user:password@example.com','/relative']) assert.equal(safeURL(bad),null);
+assert.equal(safeURL('https://www.inwallkart.com/'),'https://www.inwallkart.com/');
+assert.throws(()=>prepare([]));
+assert.throws(()=>prepare([tracks[0],tracks[0]]));
+for(const t of tracks) {assert.ok(t.lat>41&&t.lat<52&&t.lng>-6&&t.lng<10);assert.match(t.postal_code,/^\d{5}$/);assert.ok(t.name&&t.city&&t.department_name&&t.region);}
+console.log('PASS: 354 circuits, source corrections, accent/department search, combined filters, empty states, safe links.');
