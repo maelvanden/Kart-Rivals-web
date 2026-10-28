@@ -1,5 +1,8 @@
 name: Publication IONOS
 on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/ionos.yml"]
   workflow_dispatch:
     inputs:
       operation:
@@ -34,7 +37,7 @@ jobs:
           IONOS_SFTP_PASSWORD: ${{ secrets.IONOS_SFTP_PASSWORD }}
           IONOS_HOST_FINGERPRINT: ${{ vars.IONOS_HOST_FINGERPRINT }}
           IONOS_REMOTE_DIR: ${{ vars.IONOS_REMOTE_DIR }}
-          OPERATION: ${{ inputs.operation }}
+          OPERATION: ${{ inputs.operation || 'verifier' }}
         shell: python
         run: |
           import base64
@@ -55,7 +58,11 @@ jobs:
                   actual = "SHA256:" + base64.b64encode(
                       hashlib.sha256(key.asbytes()).digest()
                   ).decode().rstrip("=")
-                  expected = os.environ.get("IONOS_HOST_FINGERPRINT", "").strip()
+                  expected = os.environ.get("IONOS_HOST_FINGERPRINT", "").strip() or (
+                      # IONOS official ED25519 fingerprint, verified 2026-10-28:
+                      # https://www.ionos.de/hilfe/hosting/ssh-zugaenge-einrichten-und-verwalten/uebersicht-der-ssh-fingerabdruecke-im-ionos-webhosting/
+                      "SHA256:1gx2w8Rtv3wCgi7Jh8myf/KVd72cRQbow03UP8P095Q"
+                  )
                   if not expected:
                       print("Empreinte presentee par le serveur : " + actual)
                       raise paramiko.SSHException(
