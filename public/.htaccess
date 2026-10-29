@@ -5,6 +5,8 @@ DirectoryIndex index.html
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://kartrivals.fr%{REQUEST_URI} [R=301,L]
+
+RewriteRule ^confidentialite/?$ confidentialite.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>

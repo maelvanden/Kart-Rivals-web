@@ -9,3 +9,5 @@
 
 /* Official Kart Rivals identity: preserve square proportions and clear space. */
 .brand-logo{display:block;width:48px;height:48px;object-fit:contain;flex:0 0 auto}.dialog>.brand-logo{width:60px;height:60px;margin-bottom:24px}@media(max-width:600px){.brand .brand-logo{width:36px;height:36px}}
+
+.footer>div{flex-wrap:wrap}
