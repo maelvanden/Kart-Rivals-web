@@ -66,3 +66,29 @@ carte géographique avec zoom et coordonnées, sans détails routiers. Les itin�
 ouvrent Google Maps. Aucun service de tuiles externe ni géolocalisation du visiteur.
 Le chargement des données est différé à l'approche de l'annuaire. La recherche reste
 utilisable si le fond géographique échoue ; l'interface signale cet état.
+
+## Contact des kartings
+
+La section `#kartings` contient un formulaire de partenariat / mise à jour de fiche.
+`public/api/contact.php` nécessite PHP >= 7.4 avec sessions et fonction `mail()` activées.
+L'expéditeur et le destinataire sont `contact@kartrivals.fr`, conformément aux règles
+IONOS ; `Reply-To` contient l'adresse validée du demandeur. Aucun e-mail automatique
+n'est envoyé au demandeur. Le succès signifie que le serveur de messagerie a accepté
+l'envoi, sans garantie de livraison en boîte de réception. Sur erreur, le formulaire
+conserve les champs et propose le contact e-mail direct.
+
+Les demandes sont conservées sous `/.kart-rivals-contact/` (à côté du dossier `/public`,
+jamais dans ce dossier) avec des permissions restreintes. Les demandes ne sont pas
+publiées dans GitHub. Les fichiers JSON contiennent une référence KR, le message,
+les coordonnées et l'état de la notification. Ils sont consultables par SFTP si besoin.
+Nettoyage opportuniste après 90 jours pour les demandes, après 24 h pour les fichiers
+de limitation. Les mails reçus doivent être supprimés selon le suivi de la relation.
+
+Validation serveur, jeton CSRF avec session sécurisée, contrôle Origin, piège anti-bot,
+limitation à 5 demandes/heure par empreinte d'IP (HMAC avec clé privée générée sur le
+serveur) et dédoublonnage de session pendant 10 min. Pas d'envoi de pièce jointe ni de
+mise à jour automatique de Supabase. Vérifier le lien du demandeur avec le karting avant
+modification de sa fiche ou attribution d'un accès gestionnaire dans l'application.
+
+Tests sans envoi d'e-mail réel : `php tests/contact.test.php` et
+`python tests/contact-http.test.py /chemin/vers/php`.

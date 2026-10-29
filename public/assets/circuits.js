@@ -71,6 +71,17 @@
       });
       actions.append(showMap);
     }
+    const requestUpdate = node('button', 'Vous gérez ce circuit ? Actualiser la fiche'); requestUpdate.type = 'button';
+    requestUpdate.addEventListener('click', () => {
+      dialog.close();
+      document.getElementById('partner-type').value = 'update';
+      document.getElementById('partner-type').dispatchEvent(new Event('change'));
+      document.getElementById('partner-karting').value = track.name;
+      document.getElementById('partner-city').value = track.city;
+      document.getElementById('kartings').scrollIntoView({block:'start', behavior:'auto'});
+      document.getElementById('partner-name').focus({preventScroll:true});
+    });
+    actions.append(requestUpdate);
     details.append(actions, node('p', 'Informations issues de l’annuaire Kart Rivals. Horaires, tarifs et conditions à confirmer directement auprès du circuit.', 'circuit-detail-note'));
     dialog.showModal();
   }
