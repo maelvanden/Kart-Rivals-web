@@ -54,8 +54,8 @@
     const actions = node('div', null, 'circuit-detail-actions');
     // An address-based route is preferable to an approximate imported coordinate.
     const destination = `${track.name}, ${track.address || ''}, ${track.postal_code} ${track.city}, France`;
-    actions.append(link('Itinéraire ↗', 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destination)));
-    [link('Site du circuit ↗', track.website), link('Réserver ↗', track.booking_url)].filter(Boolean).forEach(anchor => actions.append(anchor));
+    actions.append(link('Itinéraire', 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destination)));
+    [link('Site du circuit', track.website), link('Réserver', track.booking_url)].filter(Boolean).forEach(anchor => actions.append(anchor));
     if (track.phone) {
       const phone = node('a', `Appeler : ${track.phone}`);
       const number = track.phone.replace(/[^\d+]/g, '');
@@ -104,7 +104,7 @@
       row.setAttribute('aria-label', `Voir la fiche de ${track.name}, ${track.city}`);
       const bar = node('span'); bar.setAttribute('aria-hidden', 'true');
       const text = node('span'); text.append(node('strong', track.name), node('small', `${track.city} (${track.department}) · ${typeLabel(track)}${track.length_m ? ' · ' + track.length_m + ' m' : ''}`));
-      const arrow = node('span', '↗'); arrow.setAttribute('aria-hidden', 'true');
+      const arrow = node('span'); arrow.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;width:1em;height:1em;vertical-align:-.12em;flex-shrink:0"><path d="M7 17 17 7M7 7h10v10"/></svg>'; arrow.setAttribute('aria-hidden', 'true');
       row.append(bar, text, arrow); row.addEventListener('click', () => openDetails(track)); list.append(row);
     });
   }
@@ -127,7 +127,7 @@
       const popup = node('div', null, 'map-popup');
       popup.append(node('strong', track.name), node('p', `${track.city} (${track.department}) · ${typeLabel(track)}`));
       if (track.location_approx) popup.append(node('p', 'Position approximative'));
-      const button = node('button', 'Découvrir le circuit ↗'); button.type = 'button'; button.addEventListener('click', () => openDetails(track)); popup.append(button);
+      const button = node('button', 'Découvrir le circuit'); button.type = 'button'; button.addEventListener('click', () => openDetails(track)); popup.append(button);
       marker.bindPopup(popup, {maxWidth: 260, minWidth: 190});
       markers.set(track.id, marker); clusters.addLayer(marker);
     });

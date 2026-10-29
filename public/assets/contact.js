@@ -37,7 +37,7 @@
     } finally {
       clearTimeout(timeout); busy = false; submit.disabled = false; submit.removeAttribute('aria-busy');
       submit.replaceChildren(document.createTextNode('ENVOYER MA DEMANDE '));
-      const arrow = document.createElement('span'); arrow.textContent = '↗'; arrow.setAttribute('aria-hidden','true'); submit.append(arrow);
+      const arrow = document.createElement('span'); arrow.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;width:1em;height:1em;vertical-align:-.12em;flex-shrink:0"><path d="M7 17 17 7M7 7h10v10"/></svg>'; arrow.setAttribute('aria-hidden','true'); submit.append(arrow);
     }
   });
 })();
