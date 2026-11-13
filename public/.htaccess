@@ -8,6 +8,7 @@ RewriteRule ^ https://kartrivals.fr%{REQUEST_URI} [R=301,L]
 
 RewriteRule ^confidentialite/?$ confidentialite.html [L]
 RewriteRule ^cgu/?$ cgu.html [L]
+RewriteRule ^confirmation/?$ confirmation.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -15,4 +16,11 @@ Header set X-Content-Type-Options "nosniff"
 Header set Referrer-Policy "strict-origin-when-cross-origin"
 Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 Header set Content-Security-Policy "default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+</IfModule>
+
+# Autoriser uniquement le script fourni pour la page de confirmation.
+<IfModule mod_headers.c>
+<Files "confirmation.html">
+Header set Content-Security-Policy "default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-SyMHqJRn1qipudKnf1RU0AuyX4jYaF3tCo/7INQBc74='; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+</Files>
 </IfModule>
