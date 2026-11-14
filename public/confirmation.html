@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <title>Kart Rivals</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261114" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20261114" />
   <style>
     :root { --night: #161920; --surface: #1f232c; --border: #2c313c; --text: #f2f4f7; --muted: #9aa3b2; --volt: #deff00; --orange: #ff6b1a; }
     * { box-sizing: border-box; }
@@ -13,12 +15,8 @@
       background: radial-gradient(circle at 15% 0%, #252c14 0, transparent 45%), radial-gradient(circle at 100% 100%, #2a1a14 0, transparent 45%), var(--night);
       color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    .brand-logo { display: block; width: 88px; height: 88px; margin: 0 auto 18px; border-radius: 20px; object-fit: contain; }
     main { width: 100%; max-width: 420px; text-align: center; }
-    .checker { display: grid; grid-template-columns: repeat(4, 14px); gap: 0; justify-content: center; margin-bottom: 18px; }
-    .checker span { width: 14px; height: 14px; }
-    .checker span:nth-child(odd) { background: var(--text); }
-    .checker span:nth-child(n+5):nth-child(even) { background: var(--text); }
-    .checker span:nth-child(n+5):nth-child(odd) { background: transparent; }
     h1 { margin: 0 0 28px; font-size: 34px; font-weight: 900; font-style: italic; letter-spacing: 1px; }
     h1 b { color: var(--volt); }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px 22px; }
@@ -34,7 +32,7 @@
 </head>
 <body>
   <main>
-    <div class="checker" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <img class="brand-logo" src="/favicon.svg?v=20261114" width="88" height="88" alt="Logo Kart Rivals" />
     <h1>KART <b>RIVALS</b></h1>
     <div class="card ok" id="card">
       <div class="icon" id="icon">✅</div>
